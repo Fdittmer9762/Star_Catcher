@@ -7,7 +7,18 @@ public class PlayerMovement : MonoBehaviour {
     protected Vector3 tempPos; // responsible for setting destination of plyaer controller
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
-    public float jumpForce, gravity; //force of jump and gravity
+    public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
+
+    public void Start() {
+        //set things
+        StartCoroutine(Move());
+    }
+
+    public IEnumerator Move() { //used in place of update
+        MovePlayer();
+        yield return null;
+        StartCoroutine(Move());
+    }
 
     public void MovePlayer() {
         tempPos.y = Jump(Input.GetAxis("Vertical"), tempPos.y); // uses the input causing the player to jump
@@ -17,15 +28,15 @@ public class PlayerMovement : MonoBehaviour {
 
     protected float Run(float dir, float tPX) {
         Rotate(dir); //determines if the art should be flipped
-        return tPX = dir * Time.deltaTime; //set the players horizontal destination based on the input, returns the value
+        return tPX = dir * Time.deltaTime * speed; //set the players horizontal destination based on the input, returns the value
     }
 
     protected void Rotate(float dir) { //determines if the art needs to be flipped
         if (dir > 0 && isLeft) { //if input is right and the player is facing left
             FlipArt(false); //flip the art
         }
-        if (dir < 0 && ! isLeft) { //if the input is left and the player is facing right (not left)
-            FlipArt(false); //flip the art
+        if (dir < 0 &&  isLeft == false) { //if the input is left and the player is facing right (not left)
+            FlipArt(true); //flip the art
         }
     }
 
