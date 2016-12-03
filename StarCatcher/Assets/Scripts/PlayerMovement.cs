@@ -3,11 +3,20 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
 
-    public CharacterController mainCC; //responsible for moving player agent
-    protected Vector3 tempPos; // responsible for setting destination of plyaer controller
+    //MOVEMENT VARS
+    public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
+
+    //PLAYER AGENT  
+    public CharacterController agentCC; //responsible for moving player agent
+    protected Vector3 agentTP; // responsible for setting destination of player agent
+
+    //PLAYER
+    public CharacterController playerCC; //moves the player art
+    protected Vector3 playerTP;
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
-    public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
+
+
 
     public void Start() {
         //set things
@@ -21,9 +30,12 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public void MovePlayer() {
-        tempPos.y = Jump(Input.GetAxis("Vertical"), tempPos.y); // uses the input causing the player to jump
-        tempPos.x = Run(Input.GetAxis("Horizontal"), tempPos.x); // uses input to cause player to set the horizontal movement
-        mainCC.Move(tempPos); //move player to point
+        agentTP.x = Run(Input.GetAxis("Horizontal"), agentTP.x); // uses input to cause player to set the horizontal movement
+        agentTP.y = Gravity (agentTP.y); //applys gravity to the player agent
+        playerTP.y = Jump(Input.GetAxis("Vertical"), playerTP.y); // uses the input causing the player to jump
+        playerTP.x = agentTP.x; //sets reference to agent movement instead of calling the chain of mehtods agian, second cc causes independent movement despite parent child relationship, may alter things later
+        agentCC.Move(agentTP); //move player to point
+        playerCC.Move(playerTP);
     }
 
     protected float Run(float dir, float tPX) {
