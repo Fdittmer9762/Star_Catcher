@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour {
 
     //MOVEMENT VARS
-    public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
+    public float speed, speedDamper = 1, jumpForce; //gravity moved to statics //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
     private int jumpCount = 0, jumpLimit = 2;
 
     //PLAYER AGENT  
@@ -90,7 +90,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Gravity(float j) { //adds gravity to object                                        **may have as part of inheritance later**
-        return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
+        return j -= (Statics.gravity * Time.deltaTime); //returns the jump with the gravity added
     }
 
     private void ResetJumpCount() {
