@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour {
 
     //MOVEMENT VARS
     public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
+    private int jumpCount = 0, jumpLimit = 2;
 
     //PLAYER AGENT  
     public CharacterController agentCC; //responsible for moving player agent
@@ -16,13 +17,24 @@ public class PlayerMovement : MonoBehaviour {
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
 
-
-
+    //SETUP
     public void Start() {
         //set things
         StartCoroutine(Move());
     }
 
+    //EVENT SUBS
+    void OnEnable() {
+        GroundedEventManager.OnGrounded += ResetJumpCount;
+    }
+
+    void OnDisable()
+    {
+        GroundedEventManager.OnGrounded -= ResetJumpCount;
+        StopCoroutine(Move());
+    }
+
+    //MOVEMENT
     public IEnumerator Move() { //used in place of update
         MovePlayer();
         yield return null;
@@ -58,7 +70,12 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Jump(float j, float tPY) {
-        tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce
+        if( j > 0 && jumpCount < jumpLimit) {
+            //tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce
+            //cause player to jump
+            jumpCount++;
+            Debug.Log(jumpCount);
+        } 
         return Gravity(tPY);
     }
 
@@ -66,5 +83,8 @@ public class PlayerMovement : MonoBehaviour {
         return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
     }
 
-
+    private void ResetJumpCount() {
+        Debug.Log(jumpCount + " :reset to");
+        jumpCount = 0;
+    }
 }
