@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour {
     //SETUP
     public void Start() {
         //set things
+        speed = Statics.playerSpeed;
         StartCoroutine(Move()); //starts player movement,                   **may move to onenable()
     }
 
