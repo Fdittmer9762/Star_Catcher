@@ -20,18 +20,18 @@ public class PlayerMovement : MonoBehaviour {
     //SETUP
     public void Start() {
         //set things
-        StartCoroutine(Move());
+        StartCoroutine(Move()); //starts player movement,                   **may move to onenable()
     }
 
     //EVENT SUBS
-    void OnEnable() {
-        GroundedEventManager.OnGrounded += ResetJumpCount;
+    void OnEnable() { //when player agent is enabled
+        GroundedEventManager.OnGrounded += ResetJumpCount;//unsubs from grounder
     }
 
-    void OnDisable()
+    void OnDisable() //when player agent is disabled
     {
-        GroundedEventManager.OnGrounded -= ResetJumpCount;
-        StopCoroutine(Move());
+        GroundedEventManager.OnGrounded -= ResetJumpCount; //unsubs from grounder
+        StopCoroutine(Move()); //stop movement,                      **may replace with an action<t> event
     }
 
     //MOVEMENT
@@ -44,8 +44,10 @@ public class PlayerMovement : MonoBehaviour {
     public void MovePlayer() {
         agentTP.x = Run(Input.GetAxis("Horizontal"), agentTP.x); // uses input to cause player to set the horizontal movement
         agentTP.y = Gravity (agentTP.y); //applys gravity to the player agent
+
         playerTP.y = Jump(Input.GetAxis("Vertical"), playerTP.y); // uses the input causing the player to jump
         playerTP.x = agentTP.x; //sets reference to agent movement instead of calling the chain of mehtods agian, second cc causes independent movement despite parent child relationship, may alter things later
+
         agentCC.Move(agentTP); //move player to point
         playerCC.Move(playerTP);
     }
@@ -70,9 +72,9 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Jump(float j, float tPY) {
-        if( j > 0 && jumpCount < jumpLimit) {
-            //tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce
-            //cause player to jump
+        if( j > 0 && jumpCount < jumpLimit) { //if the player is jumping
+            //tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce, **uses charactercontroller.Move()
+            //cause player to jump ,                                                                   ** may use animation or replace input.getaxis with input.getbutton("space") for something that fires once, even an event
             jumpCount++;
             Debug.Log(jumpCount);
         } 
