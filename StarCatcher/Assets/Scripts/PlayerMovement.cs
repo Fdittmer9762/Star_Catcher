@@ -17,6 +17,10 @@ public class PlayerMovement : MonoBehaviour {
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
 
+    //TRACKPLAYER EVENT
+    public delegate void TrackPlayer();
+    public static event TrackPlayer PlayerMoved;
+
     //SETUP
     public void Start() {
         //set things
@@ -54,6 +58,9 @@ public class PlayerMovement : MonoBehaviour {
 
     protected float Run(float dir, float tPX) {
         Rotate(dir); //determines if the art should be flipped
+        if (dir != 0 && PlayerMoved != null) { //if player will move and the event is not null
+            PlayerMoved(); //send player location to event subs
+        }
         return tPX = dir * Time.deltaTime * speed; //set the players horizontal destination based on the input, returns the value
     }
 
