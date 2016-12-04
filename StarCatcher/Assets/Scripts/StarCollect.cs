@@ -10,7 +10,6 @@ public class StarCollect : MonoBehaviour {
     public static event StarCollected OnCollection;
 
     void OnTriggerEnter() {
-        Debug.Log("hit");
         if (OnCollection != null) {
             OnCollection(sValue);
         }
