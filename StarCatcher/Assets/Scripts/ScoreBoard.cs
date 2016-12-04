@@ -3,7 +3,12 @@ using System.Collections;
 
 public class ScoreBoard : MonoBehaviour {
 
-    public int currentScore;
+    //SCORE KEEPING
+    public int collectedStars;
+
+    //DEATH EVENT
+    public delegate void PlayerDeath();
+    public static event PlayerDeath PlayerDied;
 
     //EVENT SUB
     void OnEnable() {
@@ -19,20 +24,22 @@ public class ScoreBoard : MonoBehaviour {
     //ADDING POINTS
     int AddPoints(int points) {
         Debug.Log("Added: " + points + " points!");
-        return currentScore += points;
+        return collectedStars += points;
     }
 
     //DAMAGE TO PLAYER
     void OnPlayerDamaged() {
-        if (currentScore <= 0) {
-            //kill player, fire event
+        if (collectedStars <= 0) {
+            if (PlayerDied != null){
+                PlayerDied();//kill player, fire event
+            }
             //use event to pass final score to highscores
             Debug.Log("PlayerIsDead"); //ForDebugging, replace later
         }
-        if (currentScore > 0) {
-            Debug.Log("Player has lost " + currentScore + " stars!" );
+        if (collectedStars > 0) {
+            Debug.Log("Player has lost " + collectedStars + " stars!" );
             //spawn a partical for each star collected
-            currentScore = 0; //sets current score to 0
+            collectedStars = 0; //sets current score to 0
         }
     }
 
