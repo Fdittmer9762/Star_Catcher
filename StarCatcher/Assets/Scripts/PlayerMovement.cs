@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour {
 
     //MOVEMENT VARS
     public float speed, speedDamper = 1, jumpForce, gravity; //force of jump and gravity, speed is character movement speed, speed damper allows for changes to the movement speed     ***may move gravity to a public static class later for universal access***
-    private int jumpCount = 0, jumpLimit = 2;
+    private int jumpCount = 0, jumpLimit = 20;
 
     //PLAYER AGENT  
     public CharacterController agentCC; //responsible for moving player agent
@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour {
     protected Vector3 playerTP;
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
+    public bool isGrounded;
 
     //TRACKPLAYER EVENT
     public delegate void TrackPlayer();
@@ -80,7 +81,9 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Jump(float j, float tPY) {
-        if( j > 0 && jumpCount < jumpLimit) { //if the player is jumping
+        if( j > 0 && isGrounded) { //if the player is jumping
+            tPY += jumpForce * Time.deltaTime;
+            isGrounded = false;
             //tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce, **uses charactercontroller.Move()
             //cause player to jump ,                                                                   ** may use animation or replace input.getaxis with input.getbutton("space") for something that fires once, even an event
             jumpCount++;
@@ -90,11 +93,16 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Gravity(float j) { //adds gravity to object                                        **may have as part of inheritance later**
-        return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
+        if (isGrounded) {
+            return j = -gravity * Time.deltaTime;
+        } else {
+            return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
+        }
     }
 
     private void ResetJumpCount() {
         Debug.Log(jumpCount + " :reset to");
         jumpCount = 0;
+        isGrounded = true;
     }
 }
