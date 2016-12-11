@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public float Jump(float j, float tPY) {
-        if( j > 0 && isGrounded) { //if the player is jumping
+        if( j > 0 && playerCC.isGrounded) { //if the player is jumping
             tPY += jumpForce * Time.deltaTime;
             isGrounded = false;
             //tPY = j * jumpForce * Time.deltaTime; //sets the vert position with input and jumpforce, **uses charactercontroller.Move()
@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void ResetJumpCount() {
-        Debug.Log(jumpCount + " :reset to");
+        Debug.Log(" Jump count reset to" + jumpCount);
         jumpCount = 0;
         isGrounded = true;
     }
