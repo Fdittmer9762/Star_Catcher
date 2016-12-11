@@ -54,6 +54,9 @@ public class PlayerMovement : MonoBehaviour {
         playerTP.y = Jump(Input.GetAxis("Vertical"), playerTP.y); // uses the input causing the player to jump
         playerTP.x = agentTP.x; //sets reference to agent movement instead of calling the chain of mehtods agian, second cc causes independent movement despite parent child relationship, may alter things later
 
+        float dif = agentCC.transform.position.x - playerCC.transform.position.x;
+        agentTP.x -= dif;
+
         agentCC.Move(agentTP); //move player to point
         playerCC.Move(playerTP);
     }
