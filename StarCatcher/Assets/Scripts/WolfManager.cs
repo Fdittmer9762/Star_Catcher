@@ -8,15 +8,41 @@ public class WolfManager : MonoBehaviour {
     public Animator wolfAnim;
     private bool isLeft = false;
 
+    public CharacterController enemyCC;
+    public Vector3 enemyTP;
+    public float jumpHeight;
+
 
     void Start() {
         //filler
+    }
+
+    void OnEnable()
+    {
+        StartCoroutine(EnemyMove());
         SetSpeed(0f);
     }
 
     void Update() { //UPDATE LATER
         Tracking();
     }
+
+    //JUMPING  
+    IEnumerator EnemyMove()
+    {
+        enemyTP.y = Gforce(enemyTP.y);
+        enemyCC.Move(enemyTP);
+        yield return null;
+        StartCoroutine(EnemyMove());
+    }
+
+    private float Gforce(float g)
+    {
+        return g = -1f * (Statics.gravity * Time.deltaTime);
+    }
+
+
+    //ANIMATION
     public void Tracking() {
         currentPos = wolfGO.transform.position;//updates the current position
         deltaPos = comparePos(currentPos, previousPos); //finds the difference between the two points
