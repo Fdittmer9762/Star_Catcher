@@ -12,7 +12,6 @@ public class Star : MonoBehaviour {
     }
 
     void OnEnable() {
-        Debug.Log("Fire!!!");
         rnd = Random.Range(rndMin,rndMax);
         starRB.AddForce(rnd, - Mathf.Abs(rnd), 0);
     }
