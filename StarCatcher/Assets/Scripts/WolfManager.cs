@@ -58,7 +58,6 @@ public class WolfManager : MonoBehaviour {
         if (speed.x == 0) {//if the player is not moving do nothing
             return;
         }
-        Debug.Log(speed);//for debugging
         SetSpeed(speed.x);//sets the animation speed
         Rotate(speed.x);
     }

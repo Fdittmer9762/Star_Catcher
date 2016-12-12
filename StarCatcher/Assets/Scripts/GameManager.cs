@@ -27,4 +27,6 @@ public class GameManager : MonoBehaviour {
             OnLevelReset(); //Send level reset to all subs, anything that needs to be reset for a new game
         } 
         }
+
+
 }
