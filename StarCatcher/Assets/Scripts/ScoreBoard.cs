@@ -8,6 +8,10 @@ public class ScoreBoard : MonoBehaviour {
     public int collectedStars;
     public Text starCount;
 
+    public float dist;
+    public Text distScore;
+    public string meters = " m";
+
 
     //DEATH EVENT
     public delegate void PlayerDeath();
@@ -21,17 +25,19 @@ public class ScoreBoard : MonoBehaviour {
     void OnEnable() {
         StarCollect.OnCollection += AddPoints;
         DamagePlayer.OnPlayerDamaged += OnPlayerDamaged;
+        PlayerMovement.PlayerMoved += OnPlayerMove;
     }
 
     void OnDisable() {
         StarCollect.OnCollection -= AddPoints;
         DamagePlayer.OnPlayerDamaged -= OnPlayerDamaged;
+        PlayerMovement.PlayerMoved -= OnPlayerMove;
     }
 
     //ADDING POINTS
     int AddPoints(int points) {
         Debug.Log("Added: " + points + " points!");
-        UpdateScore(collectedStars += points); //may clean up later, need to call update somehow now
+        UpdateScore(collectedStars += points, starCount); //may clean up later, need to call update somehow now
         return collectedStars += points;
     }
 
@@ -48,11 +54,21 @@ public class ScoreBoard : MonoBehaviour {
             Debug.Log("Player has lost " + collectedStars + " stars!" );
             //spawn a partical for each star collected
             collectedStars = 0; //sets current score to 0
-            UpdateScore(collectedStars);//updates score
+            UpdateScore(collectedStars, starCount);//updates score
         }
     }
 
-    void UpdateScore(int score) {
-        starCount.text = score.ToString();
+    void OnPlayerMove(){
+        dist += Time.deltaTime;
+        UpdateScore(Mathf.RoundToInt(dist), distScore, meters);
     }
+
+    void UpdateScore(int score, Text updatedText) {
+        updatedText.text = score.ToString();
+    }
+
+    void UpdateScore(float score, Text updatedText, string extraTxt){
+        updatedText.text = score.ToString() + extraTxt;
+    }
+
 }
