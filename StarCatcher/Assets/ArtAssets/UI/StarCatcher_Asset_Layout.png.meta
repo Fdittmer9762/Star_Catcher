@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: b512f23c7bac85145bfc6c89760bc02a
-timeCreated: 1481420407
-licenseType: Free
+timeCreated: 1481522077
+licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
     21300000: Pause_Background
@@ -352,10 +352,10 @@ TextureImporter:
       name: GameOver_Background
       rect:
         serializedVersion: 2
-        x: 1356
-        y: 0
-        width: 564
-        height: 1200
+        x: 1359
+        y: 599
+        width: 561
+        height: 188
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
