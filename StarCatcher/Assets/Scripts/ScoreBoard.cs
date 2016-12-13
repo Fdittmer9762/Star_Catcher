@@ -13,9 +13,10 @@ public class ScoreBoard : MonoBehaviour {
     public string meters = " m";
 
     public Text[] clock;
-    public float timer;
+    public float timer = 180;
     public GameObject moon;
-    public Quaternion moonRot;
+    public GameObject moonArt;
+    //public Quaternion moonRot;
 
 
     //DEATH EVENT
@@ -91,12 +92,20 @@ public class ScoreBoard : MonoBehaviour {
 
     //GAME TIMER
     IEnumerator Timer() {
-        timer += Time.deltaTime;//count up time
-        //moonRot.z = timer;//update moon transform
-        //moon.transform.rotation = moonRot;//move the moon to transform
-        //UpdateScore(timer, clock); //updates HUD clock
+        timer -= Time.deltaTime;//count up time
+        Debug.Log(timer);
+        //moonRot.z = Mathf.Abs(timer);//update moon transform
+        moon.transform.Rotate(Vector3.back * Time.deltaTime);
+        moonArt.transform.Rotate(Vector3.forward * Time.deltaTime);
+        //moon.transform.rotation = Quaternion.Slerp(moon.transform.rotation, moonRot, Time.deltaTime*5);//move the moon to transform
+        UpdateScore(Mathf.RoundToInt(timer), clock); //updates HUD clock
         yield return null;//wait one second
-        StartCoroutine(Timer());
+        if (timer <= 0) {
+            OnPlayerDeath();
+            StopCoroutine(Timer());
+        }else {
+            StartCoroutine(Timer());
+        }
     }
 
     // UPDATING UI TEXT + OVERLOADS
