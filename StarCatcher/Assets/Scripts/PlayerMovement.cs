@@ -26,18 +26,21 @@ public class PlayerMovement : MonoBehaviour {
     public void Start() {
         //set things
         speed = Statics.playerSpeed;
+        jumpForce = Statics.playerJumpForce;
         StartCoroutine(Move()); //starts player movement,                   **may move to onenable()
     }
 
     //EVENT SUBS
     void OnEnable() { //when player agent is enabled
         GroundedEventManager.OnGrounded += ResetJumpCount;//unsubs from grounder
+        ScoreBoard.PlayerDied += DisableMovement;
     }
 
     void OnDisable() //when player agent is disabled
     {
         GroundedEventManager.OnGrounded -= ResetJumpCount; //unsubs from grounder
         StopCoroutine(Move()); //stop movement,                      **may replace with an action<t> event
+        ScoreBoard.PlayerDied -= DisableMovement;
     }
 
     //MOVEMENT
@@ -66,7 +69,7 @@ public class PlayerMovement : MonoBehaviour {
         if (dir != 0 && PlayerMoved != null) { //if player will move and the event is not null
             PlayerMoved(); //send player location to event subs
         }
-        return tPX = dir * Time.deltaTime * speed; //set the players horizontal destination based on the input, returns the value
+        return tPX = dir * Time.deltaTime * speed* speedDamper; //set the players horizontal destination based on the input, returns the value
     }
 
     protected void Rotate(float dir) { //determines if the art needs to be flipped
@@ -107,5 +110,10 @@ public class PlayerMovement : MonoBehaviour {
         Debug.Log(" Jump count reset to" + jumpCount);
         jumpCount = 0;
         isGrounded = true;
+    }
+
+    private void DisableMovement() {
+        jumpForce = 0;
+        speedDamper = 0;
     }
 }

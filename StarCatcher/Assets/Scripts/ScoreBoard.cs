@@ -6,16 +6,20 @@ public class ScoreBoard : MonoBehaviour {
 
     //SCORE KEEPING
     public int collectedStars;
-    public Text starCount;
+    public Text[] starCount;
 
     public float dist;
-    public Text distScore;
+    public Text[] distScore;
     public string meters = " m";
 
 
     //DEATH EVENT
     public delegate void PlayerDeath();
     public static event PlayerDeath PlayerDied;
+    public float deathDelay = 5;
+    public GameObject GOS; //game over screen
+    public GameObject GameHUD;
+
 
     void Start() {
         //starCount = GetComponent<UnityEngine.UI.GUIText>();
@@ -48,7 +52,7 @@ public class ScoreBoard : MonoBehaviour {
                 PlayerDied();//kill player, fire event
             }
             //use event to pass final score to highscores
-            Debug.Log("PlayerIsDead"); //ForDebugging, replace later
+            OnPlayerDeath();
         }
         if (collectedStars > 0) {
             Debug.Log("Player has lost " + collectedStars + " stars!" );
@@ -58,17 +62,48 @@ public class ScoreBoard : MonoBehaviour {
         }
     }
 
+    //FOR GAME OVER
+    void OnPlayerDeath() {
+        StartCoroutine(GameOverCalled());
+    }
+
+    public IEnumerator GameOverCalled() {
+        //stop player movement 
+        //stop star spawning 
+        PlayerDied();//play death anim; or call event
+        yield return new WaitForSeconds(deathDelay);//wait for anim to finish
+        Time.timeScale = 0; //pause time
+        GOS.SetActive(true);  //game over screen
+        GameHUD.SetActive(false);//game HUD
+    }
+
+    // TRACKING DISTANCE PLAYER HAS MOVED
     void OnPlayerMove(){
         dist += Time.deltaTime;
         UpdateScore(Mathf.RoundToInt(dist), distScore, meters);
     }
 
+    // UPDATING UI TEXT + OVERLOADS
     void UpdateScore(int score, Text updatedText) {
         updatedText.text = score.ToString();
-    }
+    } //FOR SINGLE TEXT ELEMENTS
 
     void UpdateScore(float score, Text updatedText, string extraTxt){
         updatedText.text = score.ToString() + extraTxt;
+    }
+
+    void UpdateScore(float score, Text[] updatedText) {
+        for (int i = 0; i< updatedText.Length; i++) {
+            updatedText[i].text = score.ToString();
+        }
+    }//FOR ARRAYS OF UI TEXTS
+
+    void UpdateScore(float score, Text[] updatedText, string extraTxt)
+    {
+        for (int i = 0; i < updatedText.Length; i++)
+        {
+            updatedText[i].text = score.ToString() + extraTxt;
+        }
     }
 
 }
