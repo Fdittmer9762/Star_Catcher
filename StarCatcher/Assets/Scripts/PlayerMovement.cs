@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour {
     public CharacterController agentCC; //responsible for moving player agent
     protected Vector3 agentTP; // responsible for setting destination of player agent
 
+    // ANIMATION
+    public Animator playerAnim;
+
     //PLAYER
     public CharacterController playerCC; //moves the player art
     protected Vector3 playerTP;
@@ -66,6 +69,7 @@ public class PlayerMovement : MonoBehaviour {
 
     protected float Run(float dir, float tPX) {
         Rotate(dir); //determines if the art should be flipped
+        playerAnim.SetFloat("Speed", Mathf.Abs(dir));
         if (dir != 0 && PlayerMoved != null) { //if player will move and the event is not null
             PlayerMoved(); //send player location to event subs
         }
