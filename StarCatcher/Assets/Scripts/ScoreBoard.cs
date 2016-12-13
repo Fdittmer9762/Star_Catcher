@@ -12,17 +12,23 @@ public class ScoreBoard : MonoBehaviour {
     public Text[] distScore;
     public string meters = " m";
 
+    public Text[] clock;
+    public float timer;
+    public GameObject moon;
+    public Quaternion moonRot;
+
 
     //DEATH EVENT
     public delegate void PlayerDeath();
     public static event PlayerDeath PlayerDied;
+
     public float deathDelay = 5;
     public GameObject GOS; //game over screen
     public GameObject GameHUD;
 
 
     void Start() {
-        //starCount = GetComponent<UnityEngine.UI.GUIText>();
+        StartCoroutine(Timer());
     }
 
     //EVENT SUB
@@ -40,7 +46,7 @@ public class ScoreBoard : MonoBehaviour {
 
     //ADDING POINTS
     int AddPoints(int points) {
-        Debug.Log("Added: " + points + " points!");
+        timer -= points;//adjusts the time
         UpdateScore(collectedStars += points, starCount); //may clean up later, need to call update somehow now
         return collectedStars += points;
     }
@@ -67,7 +73,7 @@ public class ScoreBoard : MonoBehaviour {
         StartCoroutine(GameOverCalled());
     }
 
-    public IEnumerator GameOverCalled() {
+    IEnumerator GameOverCalled() {
         //stop player movement 
         //stop star spawning 
         PlayerDied();//play death anim; or call event
@@ -81,6 +87,16 @@ public class ScoreBoard : MonoBehaviour {
     void OnPlayerMove(){
         dist += Time.deltaTime;
         UpdateScore(Mathf.RoundToInt(dist), distScore, meters);
+    }
+
+    //GAME TIMER
+    IEnumerator Timer() {
+        timer += Time.deltaTime;//count up time
+        //moonRot.z = timer;//update moon transform
+        //moon.transform.rotation = moonRot;//move the moon to transform
+        //UpdateScore(timer, clock); //updates HUD clock
+        yield return null;//wait one second
+        StartCoroutine(Timer());
     }
 
     // UPDATING UI TEXT + OVERLOADS
