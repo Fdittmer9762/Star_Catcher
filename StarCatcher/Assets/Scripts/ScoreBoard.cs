@@ -29,7 +29,6 @@ public class ScoreBoard : MonoBehaviour {
 
 
     void Start() {
-        StartCoroutine(Timer());
     }
 
     //EVENT SUB
@@ -37,6 +36,7 @@ public class ScoreBoard : MonoBehaviour {
         StarCollect.OnCollection += AddPoints;
         DamagePlayer.OnPlayerDamaged += OnPlayerDamaged;
         PlayerMovement.PlayerMoved += OnPlayerMove;
+        StartCoroutine(Timer());
     }
 
     void OnDisable() {
@@ -93,7 +93,6 @@ public class ScoreBoard : MonoBehaviour {
     //GAME TIMER
     IEnumerator Timer() {
         timer -= Time.deltaTime;//count up time
-        Debug.Log(timer);
         //moonRot.z = Mathf.Abs(timer);//update moon transform
         moon.transform.Rotate(Vector3.back * Time.deltaTime);
         moonArt.transform.Rotate(Vector3.forward * Time.deltaTime);
