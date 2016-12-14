@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour {
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
     public bool isGrounded;
+    public GameObject hazardDet;
 
     //TRACKPLAYER EVENT
     public delegate void TrackPlayer();
@@ -37,6 +38,8 @@ public class PlayerMovement : MonoBehaviour {
     void OnEnable() { //when player agent is enabled
         GroundedEventManager.OnGrounded += ResetJumpCount;//unsubs from grounder
         ScoreBoard.PlayerDied += DisableMovement;
+        DamagePlayer.OnPlayerDamaged += OnPlayerDamaged;
+        ScoreBoard.PlayerDied += OnPlayerDeath;
     }
 
     void OnDisable() //when player agent is disabled
@@ -44,6 +47,26 @@ public class PlayerMovement : MonoBehaviour {
         GroundedEventManager.OnGrounded -= ResetJumpCount; //unsubs from grounder
         StopCoroutine(Move()); //stop movement,                      **may replace with an action<t> event
         ScoreBoard.PlayerDied -= DisableMovement;
+        DamagePlayer.OnPlayerDamaged -= OnPlayerDamaged;
+        ScoreBoard.PlayerDied -= OnPlayerDeath;
+    }
+
+    // DAMAGED
+    void OnPlayerDamaged() {
+        playerAnim.SetTrigger("Damaged");
+        StartCoroutine(Invulnrability());
+    }
+
+    IEnumerator Invulnrability (){
+        hazardDet.SetActive(false);
+        yield return new WaitForSeconds(1f);
+        hazardDet.SetActive(true);
+    }
+
+    //DEATH
+    void OnPlayerDeath() {
+        playerAnim.SetBool("isDead", true);
+        StopCoroutine(Move()); //stop movement,     
     }
 
     //MOVEMENT
