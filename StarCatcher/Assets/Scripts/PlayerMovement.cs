@@ -104,8 +104,10 @@ public class PlayerMovement : MonoBehaviour {
 
     public float Gravity(float j) { //adds gravity to object                                        **may have as part of inheritance later**
         if (isGrounded) {
+            playerAnim.SetBool("isGrounded", true);
             return j = -gravity * Time.deltaTime;
         } else {
+            playerAnim.SetBool("isGrounded", false);
             return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
         }
     }
