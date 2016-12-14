@@ -11,12 +11,16 @@ public class PlayerMovement : MonoBehaviour {
     public CharacterController agentCC; //responsible for moving player agent
     protected Vector3 agentTP; // responsible for setting destination of player agent
 
+    // ANIMATION
+    public Animator playerAnim;
+
     //PLAYER
     public CharacterController playerCC; //moves the player art
     protected Vector3 playerTP;
     protected bool isLeft; // is the player art facing left
     public Transform playerArt; //holds the player animator
     public bool isGrounded;
+    public GameObject hazardDet;
 
     //TRACKPLAYER EVENT
     public delegate void TrackPlayer();
@@ -34,6 +38,8 @@ public class PlayerMovement : MonoBehaviour {
     void OnEnable() { //when player agent is enabled
         GroundedEventManager.OnGrounded += ResetJumpCount;//unsubs from grounder
         ScoreBoard.PlayerDied += DisableMovement;
+        DamagePlayer.OnPlayerDamaged += OnPlayerDamaged;
+        ScoreBoard.PlayerDied += OnPlayerDeath;
     }
 
     void OnDisable() //when player agent is disabled
@@ -41,6 +47,26 @@ public class PlayerMovement : MonoBehaviour {
         GroundedEventManager.OnGrounded -= ResetJumpCount; //unsubs from grounder
         StopCoroutine(Move()); //stop movement,                      **may replace with an action<t> event
         ScoreBoard.PlayerDied -= DisableMovement;
+        DamagePlayer.OnPlayerDamaged -= OnPlayerDamaged;
+        ScoreBoard.PlayerDied -= OnPlayerDeath;
+    }
+
+    // DAMAGED
+    void OnPlayerDamaged() {
+        playerAnim.SetTrigger("Damaged");
+        StartCoroutine(Invulnrability());
+    }
+
+    IEnumerator Invulnrability (){
+        hazardDet.SetActive(false);
+        yield return new WaitForSeconds(1f);
+        hazardDet.SetActive(true);
+    }
+
+    //DEATH
+    void OnPlayerDeath() {
+        playerAnim.SetBool("isDead", true);
+        StopCoroutine(Move()); //stop movement,     
     }
 
     //MOVEMENT
@@ -66,6 +92,7 @@ public class PlayerMovement : MonoBehaviour {
 
     protected float Run(float dir, float tPX) {
         Rotate(dir); //determines if the art should be flipped
+        playerAnim.SetFloat("Speed", Mathf.Abs(dir));
         if (dir != 0 && PlayerMoved != null) { //if player will move and the event is not null
             PlayerMoved(); //send player location to event subs
         }
@@ -100,8 +127,10 @@ public class PlayerMovement : MonoBehaviour {
 
     public float Gravity(float j) { //adds gravity to object                                        **may have as part of inheritance later**
         if (isGrounded) {
+            playerAnim.SetBool("isGrounded", true);
             return j = -gravity * Time.deltaTime;
         } else {
+            playerAnim.SetBool("isGrounded", false);
             return j -= (gravity * Time.deltaTime); //returns the jump with the gravity added
         }
     }
