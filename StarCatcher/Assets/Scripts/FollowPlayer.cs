@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FollowPlayer : MonoBehaviour {
 
-    public NavMeshAgent navAgent;
+    public UnityEngine.AI.NavMeshAgent navAgent;
     public Transform playerAgent;
 
     void OnEnable() {
